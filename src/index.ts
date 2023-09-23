@@ -2,6 +2,7 @@ interface ProxyOptions {
   url: string;
   method?: string;
   headers?: Record<string, string>;
+  body?: string;
 }
 
 const corsHeaders = {
@@ -13,6 +14,7 @@ const corsHeaders = {
 const allowedHostname = new Set(['blc.lolicon.app', 'localhost']);
 const allowedApis = new Set([
   'https://api.live.bilibili.com/room/v1/Room/room_init',
+  'https://api.live.bilibili.com/xlive/web-room/v1/index/getDanmuInfo',
   'https://live-open.biliapi.com/v2/app/start',
   'https://live-open.biliapi.com/v2/app/end',
 ]);
@@ -21,7 +23,7 @@ function resp404() {
   return new Response(null, { status: 404 });
 }
 
-async function handleProxy({ url, method, headers }: ProxyOptions) {
+async function handleProxy({ url, method, headers, body }: ProxyOptions) {
   if (!url) return resp404();
 
   try {
@@ -33,7 +35,7 @@ async function handleProxy({ url, method, headers }: ProxyOptions) {
     return resp404();
   }
 
-  let res = await fetch(url, { method, headers });
+  let res = await fetch(url, { method, headers, body });
   res = new Response(res.body, res);
   res.headers.set('Access-Control-Allow-Origin', '*');
   res.headers.set('Cache-Control', 'no-cache');
@@ -61,7 +63,7 @@ function handleOptions(request: Request) {
 
 const handler: ExportedHandler = {
   async fetch(request) {
-    const origin = request.headers.get('Origin');
+    const origin = request.headers.get('Origin') || request.headers.get('Referer');
     if (!origin) return resp404();
 
     try {
