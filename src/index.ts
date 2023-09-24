@@ -78,7 +78,6 @@ const handler: ExportedHandler = {
     } else if (request.method === 'POST' && request.headers.get('Content-Type') === 'application/json') {
       try {
         const options = await request.json<ProxyOptions>();
-        console.warn('options', options);
         return handleProxy(options);
       } catch (error) {
         return resp404();
