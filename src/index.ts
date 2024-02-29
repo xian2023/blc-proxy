@@ -11,7 +11,7 @@ const corsHeaders = {
   'Access-Control-Max-Age': '86400',
 };
 
-const allowedHostname = new Set(['blc.lolicon.app', 'localhost']);
+const allowedHostname = new Set(['xian2023.github.io', 'localhost']);
 const allowedApis = new Set([
   'https://api.live.bilibili.com/room/v1/Room/room_init',
   'https://api.live.bilibili.com/xlive/web-room/v1/index/getDanmuInfo',
