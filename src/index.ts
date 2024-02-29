@@ -19,6 +19,11 @@ const allowedApis = new Set([
   'https://live-open.biliapi.com/v2/app/end',
 ]);
 
+const allowedApiUrl = new Set([
+  'https://zm.armoe.cn',
+  'https://zj.v.api.aa1.cn/api/qqmusic/demo.php'
+]);
+
 function resp404() {
   return new Response(null, { status: 404 });
 }
@@ -30,7 +35,14 @@ async function handleProxy({ url, method, headers, body }: ProxyOptions) {
     const urlObj = new URL(url);
     urlObj.hash = '';
     urlObj.search = '';
-    if (!allowedApis.has(urlObj.href)) return resp404();
+    let flag = true;
+    for (const url of allowedApiUrl) {
+      if (urlObj.href.startsWith(url)) {
+        flag = false;
+        break;
+      }
+    }
+    if (flag && !allowedApis.has(urlObj.href)) return resp404();
   } catch {
     return resp404();
   }
